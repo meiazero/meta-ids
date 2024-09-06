@@ -16,7 +16,7 @@ from imblearn.over_sampling import SMOTE
 
 # Carregar dataset (explicação: o dataset deve ser carregado corretamente antes do uso)
 # TODO: Verifique se o caminho do arquivo './dataset/wustl_iiot_2021.csv' está correto.
-df = pd.read_csv('./dataset/wustl_iiot_2021.csv')
+df = pd.read_csv('./dataset/wustl-iiot-2021.csv')
 
 # Label encoding da coluna 'Traffic'
 labelencoder = LabelEncoder()

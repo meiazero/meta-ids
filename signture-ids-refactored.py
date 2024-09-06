@@ -33,6 +33,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, test_s
 smote = SMOTE(n_jobs=-1, sampling_strategy={2: 1000})
 X_train, y_train = smote.fit_resample(X_train, y_train)
 
+
 # Função para o RandomForest
 def random_forest_classifier(X_train, y_train, X_test, y_test):
     """
@@ -51,6 +52,7 @@ def random_forest_classifier(X_train, y_train, X_test, y_test):
     rf.fit(X_train, y_train)
     rf_score = rf.score(X_test, y_test)
     return rf_score
+
 
 # Função para o DecisionTree
 def decision_tree_classifier(X_train, y_train, X_test, y_test):
@@ -71,6 +73,7 @@ def decision_tree_classifier(X_train, y_train, X_test, y_test):
     dt_score = dt.score(X_test, y_test)
     return dt_score
 
+
 # Função para o AdaBoost
 def adaboost_classifier(X_train, y_train, X_test, y_test):
     """
@@ -89,6 +92,7 @@ def adaboost_classifier(X_train, y_train, X_test, y_test):
     ab.fit(X_train, y_train)
     ab_score = ab.score(X_test, y_test)
     return ab_score
+
 
 # Função para o MLPClassifier
 def mlp_classifier(X_train, y_train, X_test, y_test):
@@ -109,6 +113,7 @@ def mlp_classifier(X_train, y_train, X_test, y_test):
     mlp_score = mlp.score(X_test, y_test)
     return mlp_score
 
+
 # Função para o XGBoost
 def xgboost_classifier(X_train, y_train, X_test, y_test):
     """
@@ -127,6 +132,7 @@ def xgboost_classifier(X_train, y_train, X_test, y_test):
     xg.fit(X_train, y_train)
     xg_score = xg.score(X_test, y_test)
     return xg_score
+
 
 # Execução dos modelos e exibição dos resultados
 rf_score = random_forest_classifier(X_train, y_train, X_test, y_test)

@@ -21,10 +21,12 @@ from sklearn.metrics import classification_report, confusion_matrix, precision_r
 data = pd.read_csv('./datasets/iotid20.csv')
 
 # Processamento do dataset e remoção de colunas desnecessárias
-data['Src_IP'] = data.Src_IP.apply(lambda x: socket.inet_ntoa(struct.pack('>I', random.randint(0xac100001, 0xac1f0001))))
+data['Src_IP'] = data.Src_IP.apply(
+    lambda x: socket.inet_ntoa(struct.pack('>I', random.randint(0xac100001, 0xac1f0001))))
 data['Src_IP'] = data['Src_IP'] + ':' + data['Src_Port'].apply(str)
 data['Dst_IP'] = data['Dst_IP'] + ':' + data['Dst_Port'].apply(str)
-data.drop(columns=['Src_Port', 'Dst_Port', 'Timestamp', 'Flow_ID', 'Cat', 'Sub_Cat', 'Flow_Byts/s', 'Flow_Pkts/s'], inplace=True)
+data.drop(columns=['Src_Port', 'Dst_Port', 'Timestamp', 'Flow_ID', 'Cat', 'Sub_Cat', 'Flow_Byts/s', 'Flow_Pkts/s'],
+          inplace=True)
 
 # Label encoding
 le = LabelEncoder()
@@ -58,10 +60,12 @@ G = from_networkx(G, edge_attrs=['h', 'Label'])
 G.ndata['h'] = th.ones(G.num_nodes(), G.edata['h'].shape[1])
 G.edata['train_mask'] = th.ones(len(G.edata['h']), dtype=th.bool)
 
+
 # Função para calcular a acurácia
 def compute_accuracy(pred, labels):
     """Calcula a acurácia com base nas predições e rótulos."""
     return (pred.argmax(1) == labels).float().mean().item()
+
 
 # Definição da camada SAGE
 class SAGELayer(nn.Module):
@@ -84,6 +88,7 @@ class SAGELayer(nn.Module):
             g_dgl.ndata['h'] = F.relu(self.W_apply(th.cat([g_dgl.ndata['h'], g_dgl.ndata['h_neigh']], 2)))
             return g_dgl.ndata['h']
 
+
 # Definição do modelo SAGE
 class SAGE(nn.Module):
     def __init__(self, ndim_in, ndim_out, edim, activation, dropout):
@@ -101,6 +106,7 @@ class SAGE(nn.Module):
                 nfeats = self.dropout(nfeats)
             nfeats = layer(g, nfeats, efeats)
         return nfeats.sum(1)
+
 
 # Definição do preditor MLP
 class MLPPredictor(nn.Module):
@@ -122,6 +128,7 @@ class MLPPredictor(nn.Module):
             graph.apply_edges(self.apply_edges)
             return graph.edata['score']
 
+
 # Definição do modelo completo
 class Model(nn.Module):
     def __init__(self, ndim_in, ndim_out, edim, activation, dropout):
@@ -133,6 +140,7 @@ class Model(nn.Module):
         """Executa a predição com base no grafo e suas features."""
         h = self.gnn(g, nfeats, efeats)
         return self.pred(g, h)
+
 
 # Definição da função de perda com pesos balanceados
 class_weights = class_weight.compute_sample_weight('balanced', np.unique(G.edata['Label'].cpu().numpy()))
@@ -170,7 +178,8 @@ G_test = G_test.to_directed()
 G_test = from_networkx(G_test, edge_attrs=['h', 'Label'])
 actual = G_test.edata.pop('Label')
 G_test.ndata['feature'] = th.ones(G_test.num_nodes(), G.ndata['h'].shape[2])
-G_test.ndata['feature'] = th.reshape(G_test.ndata['feature'], (G_test.ndata['feature'].shape[0], 1, G_test.ndata['feature'].shape[1]))
+G_test.ndata['feature'] = th.reshape(G_test.ndata['feature'],
+                                     (G_test.ndata['feature'].shape[0], 1, G_test.ndata['feature'].shape[1]))
 G_test.edata['h'] = th.reshape(G_test.edata['h'], (G_test.edata['h'].shape[0], 1, G_test.edata['h'].shape[1]))
 
 # Avaliação e predição

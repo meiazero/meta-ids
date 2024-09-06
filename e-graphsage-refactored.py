@@ -18,7 +18,7 @@ from sklearn.utils import class_weight
 from sklearn.metrics import classification_report, confusion_matrix, precision_recall_fscore_support
 
 # Carregar o dataset (verificar o caminho do arquivo e o dataset em uso)
-data = pd.read_csv('./datasets/new Data 2023/IoTID20.csv')
+data = pd.read_csv('./datasets/iotid20.csv')
 
 # Processamento do dataset e remoção de colunas desnecessárias
 data['Src_IP'] = data.Src_IP.apply(lambda x: socket.inet_ntoa(struct.pack('>I', random.randint(0xac100001, 0xac1f0001))))
